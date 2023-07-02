@@ -14,3 +14,8 @@
 - Import DB World from ./prisma/databases/world.sql
 OR
 - You can import my local db from ./prisma/databases/All - Databases.sql
+
+
+## COLLECTION POSTMAN API
+Collection : https://api.postman.com/collections/15607869-333da783-f614-4ee9-a63b-d578c67b7f24?access_key=PMAT-01H4C94D1GK5JXCXRPN4H2FV1R
+environments : ./postman/Test - Surya Digital Teknologi.postman_environment
