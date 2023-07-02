@@ -55,8 +55,7 @@ class UserRepository implements UserInterface{
     }
 
     async updateData(id: number, data: any): Promise<object> {
-        console.log("On Update")
-        console.log(data)
+
         const users = await prisma.user.update({
             where: {
                 id

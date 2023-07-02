@@ -133,7 +133,6 @@ class UserController{
     } 
 
     async updateForPublic(req: Request, res: Response): Promise <any> {
-      console.log("Update For Public")
       const currentUser: any = req.session.currentUser
       const id: number = parseInt(currentUser.id)
       
