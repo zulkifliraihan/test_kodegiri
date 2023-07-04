@@ -8,11 +8,13 @@ import queue from '../config/queue';
 import { createBullBoard } from 'bull-board';
 import { BullAdapter } from 'bull-board/bullAdapter';
 import { sessionConfig } from '../config/session';
+import MainQueue from '../app/queues/MainQueue';
 
 
 dotenv.config();
 const app = express();
-MainJobs(queue);
+MainJobs();
+MainQueue.main()
 
 const JWTSecret: any = process.env.JWT_SECRET
 app.use(bodyParser.urlencoded({ extended: false }));
