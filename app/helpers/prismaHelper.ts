@@ -8,7 +8,7 @@ class PrismaHelper {
       const columns = await prisma.$queryRaw<ColumnResult[]>`
         SELECT COLUMN_NAME, DATA_TYPE, COLUMN_TYPE, COLUMN_KEY, IS_NULLABLE
         FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_SCHEMA = 'personal_portofolio'
+        WHERE TABLE_SCHEMA = 'test_suryadigitalteknologi'
         AND TABLE_NAME = ${Prisma.sql`${table}`}
       `;
 
