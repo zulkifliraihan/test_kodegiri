@@ -30,7 +30,7 @@ class UserService {
         const { error } = UserValidation.createUser.validate(data, {abortEarly: false})
 
         if (error) {
-            const errors = error.details.map((err) => err.message);
+            const errors = error.details.map((err: any) => err.message);
 
             returnData = {
                 status: false,
@@ -40,6 +40,7 @@ class UserService {
 
             return returnData
         }
+        
         const findUserByEmail = await this.userRepository.checkEmailData(data.email)
         if (findUserByEmail) {
             if (findUserByEmail.deletedAt === null) {
@@ -118,7 +119,7 @@ class UserService {
 
         let returnData
         if (error) {
-            const errors = error.details.map((err) => err.message);
+            const errors = error.details.map((err: any) => err.message);
 
             returnData = {
                 status: false,
@@ -232,107 +233,6 @@ class UserService {
                 message: "ID User Not Found",
             };
         }
-      
-        return returnData;
-    }
-
-    async updateForPublic(id: number, data: any): Promise<ServiceType> {
-
-        const { error } = UserValidation.updateForPublic.validate(data, {abortEarly: false})
-
-        let returnData
-        if (error) {
-            const errors = error.details.map((err) => err.message);
-
-            returnData = {
-                status: false,
-                response: "validation",
-                errors: errors,
-            };
-
-            return returnData
-        }
-        const checkUser = await this.userRepository.detailData(id)
-        
-        if (!checkUser) {
-            returnData = {
-                status: false,
-                response: "validation",
-                message: "ID User Not Found",
-                errors: null
-            };
-            return returnData
-        }
-
-        if (data.email) {
-            const findUserByEmail = await this.userRepository.checkEmailData(data.email)
-
-            if (findUserByEmail && findUserByEmail.id !== id) {
-            
-                if (findUserByEmail.deletedAt === null) {
-                    returnData = {
-                        status: false,
-                        response: "validation",
-                        message: "Email is already in use",
-                    };
-                }
-                else {
-                    returnData = {
-                        status: false,
-                        response: "server",
-                        message: "The email you provided has already been deleted and cannot be used for new data creation",
-                    }
-                }
-    
-                return returnData
-            }
-        }
-
-        let password
-        let birthdayDate
-        
-        if (data.password) {
-            password = bcrypt.hashSync(data.password, 10)
-        }
-        
-        if (data.birthday_date) {
-            birthdayDate = new Date(data.birthday_date)
-        }
-
-        const dataUser: object = {
-            email: data.email,
-            password: password,
-            profiles: {
-                upsert: {
-                    create: {
-                        country_id : data.country_id,
-                        state_id : data.state_id,
-                        city_id : data.city_id,
-                        firstName: data.first_name,
-                        lastName: data.last_name,
-                        birthdayAt: birthdayDate,
-                        timezone: data.timezone
-                    },
-                    update: {
-                        country_id : data.country_id ?? undefined,
-                        state_id : data.state_id ?? undefined,
-                        city_id : data.city_id ?? undefined,
-                        firstName: data.first_name ?? undefined,
-                        lastName: data.last_name ?? undefined,
-                        birthdayAt: birthdayDate ?? undefined,
-                        timezone: data.timezone ?? undefined
-                    }
-                }
-            }
-        }
-
-        const user = await this.userRepository.updateData(id, dataUser)
-
-        returnData = {
-            status: true,
-            response: "updated",
-            data: user,
-        };
       
         return returnData;
     }

@@ -9,8 +9,8 @@ const prisma = new PrismaClient()
 /***********************************/
 
 prisma.$use(async (params, next) => {
-    
-    if (params.action === 'delete' || params.action === 'deleteMany') {
+
+    if ((params.action === 'delete' || params.action === 'deleteMany') && params.model != "UserHasBook") {
 
       params.action = 'update';
       if (params.args.data) {
@@ -44,7 +44,9 @@ prisma.$use(async (params, next) => {
 
       const checkUniqueColumns = await prismaHelper.checkUniqueColumns(params.model)
 
-      if (!checkUniqueColumns) {
+      
+      if (!checkUniqueColumns && params.model != "UserHasBook") {
+
           params.action = 'findFirst';
           params.args.where = {
             ...params.args.where,

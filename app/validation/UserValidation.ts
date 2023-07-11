@@ -26,14 +26,9 @@ const updateUser = Joi.object({
 
 const updateForPublic = Joi.object({
     email: Joi.string().email().required(),
-    password: Joi.string().min(8).required(),
+    password: Joi.string().min(8),
     first_name: Joi.string().required(),
     last_name: Joi.string().required(),
-    birthday_date: Joi.date().required(),
-    country_id: Joi.number().required(),
-    state_id: Joi.number().required(),
-    city_id: Joi.number().required(),
-    timezone: Joi.string().required()
 })
 
 export default {

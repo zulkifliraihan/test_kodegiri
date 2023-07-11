@@ -1,20 +1,24 @@
 import { Request, Response } from "express";
-import UserService from "../services/UserService";
+import BookService from "../services/BookService";
 import ReturnResponse from "../traits/ReturnResponse";
 import ServiceType from "../types/ServiceType";
 
-class UserController{
-    constructor(private userService: UserService) {}
+class BookController{
+    constructor(private bookService: BookService) {}
 
     async getData(req: Request, res: Response): Promise <any> {
         try {
-            const users: ServiceType = await this.userService.getData()
+            const books: ServiceType = await this.bookService.getData()
             
             let response;
-            if (users.status) {
-              response = ReturnResponse.success(users.response, users.data);
+            if (books.status) {
+              response = ReturnResponse.success(books.response, books.data);
             } else {
-              response = ReturnResponse.errorServer(users.data);
+              if (books.response == "validation") {
+                response = ReturnResponse.errorValidation(books.errors);
+              } else {
+                response = ReturnResponse.errorServer(books.errors, books.message);
+              }
             }
             
             return res.status(response.response_code).json(response);
@@ -29,16 +33,16 @@ class UserController{
     async createData(req: Request, res: Response): Promise <any> {
         try {
             const data   = req.body
-            const users: ServiceType = await this.userService.createData(data)
+            const books: ServiceType = await this.bookService.createData(data)
 
             let response;
-            if (users.status) {
-              response = ReturnResponse.success(users.response, users.data);
+            if (books.status) {
+              response = ReturnResponse.success(books.response, books.data);
             } else {
-              if (users.response == "validation") {
-                response = ReturnResponse.errorValidation(users.errors);
+              if (books.response == "validation") {
+                response = ReturnResponse.errorValidation(books.errors);
               } else {
-                response = ReturnResponse.errorServer(users.errors, users.message);
+                response = ReturnResponse.errorServer(books.errors, books.message);
               }
             }
             
@@ -55,18 +59,18 @@ class UserController{
       const id: number = parseInt(req.params.id)
 
       try {
-          const users: ServiceType = await this.userService.detailData(id)
+          const books: ServiceType = await this.bookService.detailData(id)
           
           let response;
-          if (users.status) {
-            response = ReturnResponse.success(users.response, users.data);
+          if (books.status) {
+            response = ReturnResponse.success(books.response, books.data);
           } 
           else {
-            if (users.response == "validation") {
-              response = ReturnResponse.errorValidation(null, users.message);
+            if (books.response == "validation") {
+              response = ReturnResponse.errorValidation(null, books.message);
             }
             else {
-              response = ReturnResponse.errorServer(users.data);
+              response = ReturnResponse.errorServer(books.data);
             }
           }
           return res.status(response.response_code).json(response);
@@ -82,18 +86,18 @@ class UserController{
       const id: number = parseInt(req.params.id)
       
       try {
-          const users: ServiceType = await this.userService.updateData(id, req.body)
+          const books: ServiceType = await this.bookService.updateData(id, req.body)
           
           let response;
-          if (users.status) {
-            response = ReturnResponse.success(users.response, users.data);
+          if (books.status) {
+            response = ReturnResponse.success(books.response, books.data);
           } 
           else {
-            if (users.response == "validation") {
-              response = ReturnResponse.errorValidation(users.errors, users.message);
+            if (books.response == "validation") {
+              response = ReturnResponse.errorValidation(books.errors, books.message);
             }
             else {
-              response = ReturnResponse.errorServer(users.data);
+              response = ReturnResponse.errorServer(books.data);
             }
           }
           return res.status(response.response_code).json(response);
@@ -109,18 +113,18 @@ class UserController{
       const id: number = parseInt(req.params.id)
 
       try {
-          const users: ServiceType = await this.userService.deleteData(id)
+          const books: ServiceType = await this.bookService.deleteData(id)
           
           let response;
-          if (users.status) {
-            response = ReturnResponse.success(users.response, users.data);
+          if (books.status) {
+            response = ReturnResponse.success(books.response, books.data);
           } 
           else {
-            if (users.response == "validation") {
-              response = ReturnResponse.errorValidation(null, users.message);
+            if (books.response == "validation") {
+              response = ReturnResponse.errorValidation(null, books.message);
             }
             else {
-              response = ReturnResponse.errorServer(users.data);
+              response = ReturnResponse.errorServer(books.data);
             }
           }
           return res.status(response.response_code).json(response);
@@ -133,4 +137,4 @@ class UserController{
     } 
 }
 
-export default UserController
+export default BookController

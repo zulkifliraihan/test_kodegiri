@@ -8,132 +8,93 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  password  String    @db.VarChar(255)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime?
-  deletedAt DateTime?
-  profiles  Profile?
-  userHasRoles  UserHasRole[]
-
+  id             Int              @id @default(autoincrement())
+  email          String           @unique
+  password       String           @db.VarChar(255)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime?
+  deletedAt      DateTime?
+  profiles       Profile?
+  userHasRoles   UserHasRole[]
+  userHasBook    UserHasBook[]
+  logUserHasBook LogUserHasBook[]
 }
 
 model Role {
-  id            Int          @id @default(autoincrement())
-  name          String
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime?   
-  deletedAt     DateTime?   
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  deletedAt DateTime?
 
-  userHasRoles  UserHasRole[]
+  userHasRoles UserHasRole[]
 }
 
 model UserHasRole {
-  id            Int     @id @default(autoincrement())
-  user_id       Int
-  role_id       Int
-  user          User    @relation(fields: [user_id], references: [id])
-  role          Role    @relation(fields: [role_id], references: [id])
-  
+  id      Int  @id @default(autoincrement())
+  user_id Int
+  role_id Int
+  user    User @relation(fields: [user_id], references: [id])
+  role    Role @relation(fields: [role_id], references: [id])
+
   @@unique([user_id, role_id])
 }
 
 model Profile {
-  id                        Int         @id @default(autoincrement())
-  user_id                   Int         @unique
-  country_id                Int         @db.UnsignedMediumInt
-  state_id                  Int         @db.UnsignedMediumInt
-  city_id                   Int         @db.UnsignedMediumInt
-  firstName                 String      @db.VarChar(255)
-  lastName                  String      @db.VarChar(255)
-  timezone                  String      @db.VarChar(255)
-  birthdayAt                DateTime    @db.Date
-  lastReminderBirthdayAt    DateTime?   
-  createdAt                 DateTime    @default(now())
-  updatedAt                 DateTime?
-  deletedAt                 DateTime?
-  user                      User        @relation(fields: [user_id], references: [id])
-  contry                    countries   @relation(fields: [country_id], references: [id])
-  state                     states      @relation(fields: [state_id], references: [id])
-  city                      cities      @relation(fields: [city_id], references: [id])
+  id        Int       @id @default(autoincrement())
+  user_id   Int       @unique
+  firstName String    @db.VarChar(255)
+  lastName  String    @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  deletedAt DateTime?
+  user      User      @relation(fields: [user_id], references: [id])
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model cities {
-  id           Int       @id @default(autoincrement()) @db.UnsignedMediumInt
-  name         String    @db.VarChar(255)
-  state_id     Int       @db.UnsignedMediumInt
-  state_code   String    @db.VarChar(255)
-  country_id   Int       @db.UnsignedMediumInt
-  country_code String    @db.Char(2)
-  latitude     Decimal   @db.Decimal(10, 8)
-  longitude    Decimal   @db.Decimal(11, 8)
-  created_at   DateTime  @default(dbgenerated("'2014-01-01 06:31:01'")) @db.Timestamp(0)
-  updated_at   DateTime  @default(now()) @db.Timestamp(0)
-  flag         Boolean   @default(true)
-  wikiDataId   String?   @db.VarChar(255)
-  states       states    @relation(fields: [state_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cities_ibfk_1")
-  countries    countries @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cities_ibfk_2")
-  deletedAt    DateTime?
-  profiles     Profile[]
+model StatusRent {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  deletedAt DateTime?
 
-  @@index([state_id], map: "cities_test_ibfk_1")
-  @@index([country_id], map: "cities_test_ibfk_2")
+  logUserHasBook LogUserHasBook[]
+  Book           Book[]
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model countries {
-  id              Int       @id @default(autoincrement()) @db.UnsignedMediumInt
-  name            String    @db.VarChar(100)
-  iso3            String?   @db.Char(3)
-  numeric_code    String?   @db.Char(3)
-  iso2            String?   @db.Char(2)
-  phonecode       String?   @db.VarChar(255)
-  capital         String?   @db.VarChar(255)
-  currency        String?   @db.VarChar(255)
-  currency_name   String?   @db.VarChar(255)
-  currency_symbol String?   @db.VarChar(255)
-  tld             String?   @db.VarChar(255)
-  native          String?   @db.VarChar(255)
-  region          String?   @db.VarChar(255)
-  subregion       String?   @db.VarChar(255)
-  timezones       String?   @db.Text
-  translations    String?   @db.Text
-  latitude        Decimal?  @db.Decimal(10, 8)
-  longitude       Decimal?  @db.Decimal(11, 8)
-  emoji           String?
-  emojiU          String?
-  created_at      DateTime? @db.Timestamp(0)
-  updated_at      DateTime  @default(now()) @db.Timestamp(0)
-  flag            Boolean   @default(true)
-  wikiDataId      String?   @db.VarChar(255)
-  cities          cities[]
-  states          states[]
-  deletedAt       DateTime?
+model Book {
+  id            Int       @id @default(autoincrement())
+  name          String
+  statusrent_id Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime?
+  deletedAt     DateTime?
 
-  profiles        Profile[]
+  userHasBook    UserHasBook[]
+  logUserHasBook LogUserHasBook[]
+  rent           StatusRent       @relation(fields: [statusrent_id], references: [id])
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model states {
-  id           Int       @id @default(autoincrement()) @db.UnsignedMediumInt
-  name         String    @db.VarChar(255)
-  country_id   Int       @db.UnsignedMediumInt
-  country_code String    @db.Char(2)
-  fips_code    String?   @db.VarChar(255)
-  iso2         String?   @db.VarChar(255)
-  type         String?
-  latitude     Decimal?  @db.Decimal(10, 8)
-  longitude    Decimal?  @db.Decimal(11, 8)
-  created_at   DateTime? @db.Timestamp(0)
-  updated_at   DateTime  @default(now()) @db.Timestamp(0)
-  flag         Boolean   @default(true)
-  wikiDataId   String?   @db.VarChar(255)
-  cities       cities[]
-  countries    countries @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "country_region_final")
-  deletedAt    DateTime?
-  profiles     Profile[]
+model UserHasBook {
+  id      Int  @id @default(autoincrement())
+  user_id Int
+  book_id Int
+  user    User @relation(fields: [user_id], references: [id])
+  book    Book @relation(fields: [book_id], references: [id])
 
-  @@index([country_id], map: "country_region")
+  @@unique([user_id, book_id])
+}
+
+model LogUserHasBook {
+  id            Int        @id @default(autoincrement())
+  user_id       Int
+  book_id       Int
+  statusrent_id Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime?
+  deletedAt     DateTime?
+  
+  user          User       @relation(fields: [user_id], references: [id])
+  book          Book       @relation(fields: [book_id], references: [id])
+  rent          StatusRent @relation(fields: [statusrent_id], references: [id])
 }

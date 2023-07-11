@@ -1,6 +1,7 @@
 import { exec } from 'child_process';
 import RoleSeeder from './RoleSeeder';
 import UserSeeder from './UserSeeder';
+import StatusRentSeeder from './StatusRentSeeder';
 
 class DatabaseSeeder {
     async main() {
@@ -34,8 +35,10 @@ class DatabaseSeeder {
         });
         }
         
+        await StatusRentSeeder.seed()
         await RoleSeeder.seed()
         await UserSeeder.seed()
+
     }
 }
 
